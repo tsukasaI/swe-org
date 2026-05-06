@@ -14,11 +14,13 @@
 
 volatile sig_atomic_t should_stop = 0;
 
+// 割り込みの制御
 void signal_handler(int signum) {
   (void)signum;
   should_stop = 1;
 }
 
+// HTTP responseを生成
 void send_response(int client_fd, int status, const char *status_text,
     const char *body, int body_len) {
     char response[1024];
@@ -31,6 +33,7 @@ void send_response(int client_fd, int status, const char *status_text,
     write(client_fd, response, response_len);
 }
 
+// 文字列を "+" で区切って数値として足し算をする
 int calc_sum(char *value) {
     int sum = 0;
     char *token = strtok(value, "+");
@@ -41,6 +44,7 @@ int calc_sum(char *value) {
     return sum;
 }
 
+// ハンドラ
 void handle_request(int client_fd) {
   char buffer[BUFFER_SIZE] = {0};
   ssize_t n = read(client_fd, buffer, sizeof(buffer) - 1);
@@ -65,13 +69,11 @@ void handle_request(int client_fd) {
 
   printf("path: %s\nquery=%s\n", path, query ? query : "(none)");
 
-
   char body[256];
   int body_len;
   int status;
   const char *status_text;
 
-  
   if (strcmp(path, "/calc") != 0) {
     // 404
     status = 404;

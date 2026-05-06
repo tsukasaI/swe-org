@@ -9,6 +9,7 @@
 #define SERVER_IP "127.0.0.1"
 #define SERVER_PORT 8080
 
+// connectをコールしてサーバーに接続する
 int connect_to_server(const char *ip, int port) {
   int sock = socket(AF_INET, SOCK_STREAM, 0);
   if (sock < 0) {
@@ -27,6 +28,7 @@ int connect_to_server(const char *ip, int port) {
   return sock;
 }
 
+// writeを使ってrequestを送信する
 void send_request(int sock, const char *host, int port, const char *path) {
   char request[1024];
   int request_len = snprintf(request, sizeof(request), 
@@ -38,6 +40,7 @@ void send_request(int sock, const char *host, int port, const char *path) {
   write(sock, request, request_len);
 }
 
+// readを使ってレスポンスを読み取る
 ssize_t read_response(int sock, char *buf, size_t bufsize) {
   ssize_t total = 0;
   ssize_t n;
